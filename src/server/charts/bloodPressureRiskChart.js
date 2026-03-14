@@ -39,6 +39,7 @@ module.exports = function (systolic, diastolic) {
                 encoding: {
                     x: { field: "x1", type: "quantitative" },
                     x2: { field: "x2" },
+
                     y: { field: "y1", type: "quantitative" },
                     y2: { field: "y2" }
                 }
@@ -57,6 +58,7 @@ module.exports = function (systolic, diastolic) {
                 encoding: {
                     x: { field: "x1", type: "quantitative" },
                     x2: { field: "x2" },
+
                     y: { field: "y1", type: "quantitative" },
                     y2: { field: "y2" }
                 }
@@ -75,6 +77,7 @@ module.exports = function (systolic, diastolic) {
                 encoding: {
                     x: { field: "x1", type: "quantitative" },
                     x2: { field: "x2" },
+
                     y: { field: "y1", type: "quantitative" },
                     y2: { field: "y2" }
                 }
@@ -96,6 +99,7 @@ module.exports = function (systolic, diastolic) {
                 encoding: {
                     x: { field: "diastolic", type: "quantitative" },
                     y: { field: "systolic", type: "quantitative" },
+
                     tooltip: [
                         { field: "systolic", title: "Your Systolic (mmHg)" },
                         { field: "diastolic", title: "Your Diastolic (mmHg)" }

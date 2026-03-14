@@ -6,11 +6,11 @@ function App() {
     <div>
       <h1>Health App Running</h1>
     </div>
-  )
+  );
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <App />
-)
+);
 
-export default App
+export default App;
