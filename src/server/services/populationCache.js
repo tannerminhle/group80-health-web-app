@@ -6,7 +6,9 @@ const population = {
     bodyFat: [],
     leanMass: [],
     weight: [],
-    height: []
+    height: [],
+    systolic: [],
+    diastolic: []
 };
 
 async function loadPopulation() {
@@ -19,6 +21,13 @@ async function loadPopulation() {
     population.leanMass = await fhir.getObservationsByCode("41981-2", 200);
     population.weight = await fhir.getObservationsByCode("29463-7", 200);
     population.height = await fhir.getObservationsByCode("8302-2", 200);
+
+    // Blood pressure
+    const systolic = await fhir.getObservationsByCode("8480-6", 200);
+    const diastolic = await fhir.getObservationsByCode("8462-4", 200);
+
+    population.systolic = systolic;
+    population.diastolic = diastolic;
 
     console.log("FHIR population loaded");
 

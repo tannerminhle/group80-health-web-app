@@ -4,8 +4,13 @@ function mean(values){
 
 function median(values){
   const sorted=[...values].sort((a,b)=>a-b);
+  const mid=Math.floor(sorted.length/2);
 
-  return sorted[Math.floor(sorted.length/2)];
+  if(sorted.length % 2 === 0){
+    return (sorted[mid-1] + sorted[mid]) / 2;
+  }
+
+  return sorted[mid];
 }
 
 function percentile(values,value){
@@ -23,9 +28,9 @@ function computePopulationStats(values,userValue){
   return {
     mean: avg,
     median: med,
-    percentile: userValue ? percentile(values,userValue) : null,
-    diffMean: userValue ? (userValue-avg).toFixed(2) : null,
-    diffMedian: userValue ? (userValue-med).toFixed(2) : null
+    percentile: userValue !== null ? percentile(values,userValue) : null,
+    diffMean: userValue !== null ? userValue-avg : null,
+    diffMedian: userValue !== null ? userValue-med : null
   }
 }
 

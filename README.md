@@ -143,16 +143,10 @@ BMI distribution
 GET /api/vega/bmi?value=26
 ```
 
-Blood pressure population scatter
-
-```
-GET /api/vega/blood-pressure?systolic=105&diastolic=58
-```
-
 Blood pressure risk zones
 
 ```
-GET /api/vega/bp-risk?systolic=105&diastolic=58
+GET /api/vega/blood-pressure-risk?systolic=105&diastolic=58
 ```
 
 Weight vs height comparison
@@ -165,6 +159,12 @@ Glucose risk zones
 
 ```
 GET /api/vega/glucose?value=95
+```
+
+Heart rate
+
+```
+GET /api/vega/heart-rate?value=72
 ```
 
 ---
