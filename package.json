@@ -1,0 +1,30 @@
+{
+  "name": "group80-health-web-app",
+  "version": "1.0.0",
+  "description": "General health application for tracking and comparisons with AI recommendations for maintenance and improvement over time.",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "server": "nodemon src/server/index.js",
+    "client": "vite --config vite.config.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "vite build --config vite.config.js"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.14",
+    "vite": "^5.4.21"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-vega": "^8.0.0",
+    "vega": "^6.2.0",
+    "vega-lite": "^6.4.2"
+  }
+}
