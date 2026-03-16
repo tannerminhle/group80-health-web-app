@@ -1,11 +1,5 @@
 module.exports = function (points, userWeight, userHeight) {
-
     const layers = [
-
-        /* =========================
-           Population Points
-        ========================= */
-
         {
             data: { values: points },
 
@@ -39,15 +33,8 @@ module.exports = function (points, userWeight, userHeight) {
 
     ];
 
-
-    /* =========================
-       Your Data Point
-    ========================= */
-
     if (userWeight && userHeight) {
-
         layers.push({
-
             data: {
                 values: [{
                     weight: userWeight,
@@ -73,12 +60,9 @@ module.exports = function (points, userWeight, userHeight) {
                 ]
             }
         });
-
     }
 
-
     return {
-
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 
         title: "Weight vs Height Population",
