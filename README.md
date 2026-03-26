@@ -109,7 +109,7 @@ PORT=8080
 
 # Running the Application
 
-## Quickstart (recommended)
+## Quickstart
 
 1) Install dependencies:
 
