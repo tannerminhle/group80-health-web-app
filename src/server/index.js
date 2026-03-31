@@ -16,7 +16,9 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(clientDist, "index.html"));
 });
 
-const PORT = process.env.PORT || 5000;
+// Use 5001 by default so local dev doesn't collide with system-reserved port 5000.
+// (Port 5000 on macOS may be occupied by system processes, causing EADDRINUSE.)
+const PORT = process.env.PORT || 5001;
 
 async function startServer() {
     await populationCache.loadPopulation();
