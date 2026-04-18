@@ -76,19 +76,9 @@ function buildChart(values, userBMI, stats = {}) {
           ]
         }
       },
-      ...(userBMI ? [
+      ...(userBMI !== null && Number.isFinite(userBMI) ? [
         {
 
-          "data": { "values": [{ bmi: userBMI }] },
-
-          "mark": { "type": "rule", "color": "black", "strokeWidth": 3 },
-
-          "encoding": {
-            "x": { "field": "bmi", "type": "quantitative" }
-          }
-
-        },
-        {
           "data": {
             "values": [{
               bmi: userBMI,
@@ -99,10 +89,11 @@ function buildChart(values, userBMI, stats = {}) {
               diffMedian: safeStats.diffMedian
             }]
           },
-          "mark": { "type": "point", "size": 250, "color": "black" },
+
+          "mark": { "type": "rule", "color": "black", "strokeWidth": 3 },
+
           "encoding": {
             "x": { "field": "bmi", "type": "quantitative" },
-            "y": { "value": 0 },
             "tooltip": [
               { "field": "bmi", "title": "Your BMI" },
               { "field": "percentile", "title": "Population Percentile" },
@@ -112,6 +103,7 @@ function buildChart(values, userBMI, stats = {}) {
               { "field": "diffMedian", "title": "Difference from Median" }
             ]
           }
+
         }
       ] : [])
     ]

@@ -109,6 +109,40 @@ PORT=8080
 
 # Running the Application
 
+## Quickstart
+
+1) Install dependencies:
+
+```
+npm install
+```
+
+2) Start frontend + backend together:
+
+```
+npm run dev
+```
+
+3) Open the website:
+- Use the **Vite Local URL** printed in the terminal (commonly `http://localhost:8080/`).
+- If `8080` is busy, Vite will automatically choose another port (e.g. `8081`, `8082`).
+
+### Common issues
+
+**Backend crashed: `EADDRINUSE` (port already in use)**
+
+If you see an error like `EADDRINUSE ... port 5001`, free the port and restart:
+
+```
+lsof -nP -iTCP:5001 -sTCP:LISTEN
+kill -9 <PID>
+npm run dev
+```
+
+**FHIR sandbox unreachable**
+
+If the SMART Health IT sandbox is temporarily unreachable, the backend will fall back to synthetic population values so charts can still render locally.
+
 Start the server
 
 ```

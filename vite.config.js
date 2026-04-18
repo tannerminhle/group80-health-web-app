@@ -7,7 +7,8 @@ export default defineConfig({
   server: {
     port: 8080,
     proxy: {
-      "/api": "http://localhost:5000"
+      "/api/vega": "http://localhost:5001",
+      "/api/health": "http://localhost:5001"
     }
   }
 })
