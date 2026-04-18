@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+router.use(express.json()); 
 
 const populationCache = require("../services/populationCache");
 const { computePopulationStats } = require("../utils/stats");
@@ -75,5 +76,17 @@ router.get("/vega/heart-rate",(req,res)=>{
 	);
 });
 
+const { getHealthRecommendations } = require("../services/groq");
+
+router.post("/groq/recommend", async (req, res) => {
+    try {
+        const metrics = req.body;
+        const recommendation = await getHealthRecommendations(metrics);
+        res.json({ recommendation });
+    } catch (e) {
+        console.error("Groq error:", e.message);
+        res.status(500).json({ error: "Failed to get AI recommendations" });
+    }
+});
 
 module.exports = router;

@@ -5,7 +5,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "server": "PORT=5001 nodemon src/server/index.js",
+    "server": "set PORT=5001 && nodemon src/server/index.js",
     "client": "vite --config vite.config.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "build": "vite build --config vite.config.js"
@@ -21,6 +21,7 @@
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.1",
+    "groq-sdk": "^1.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-vega": "^8.0.0",

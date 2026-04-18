@@ -8,7 +8,8 @@ export default defineConfig({
     port: 8080,
     proxy: {
       "/api/vega": "http://localhost:5001",
-      "/api/health": "http://localhost:5001"
+      "/api/health": "http://localhost:5001",
+      "/api/groq": "http://localhost:5001"
     }
   }
 })
