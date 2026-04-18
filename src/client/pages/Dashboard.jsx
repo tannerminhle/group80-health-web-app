@@ -26,6 +26,22 @@ export default function Dashboard() {
   const [glucoseInput, setGlucoseInput] = useState("")
   const [heartRateInput, setHeartRateInput] = useState("")
 
+  const [charts, setCharts] = useState({
+    bmi: null,
+    bloodPressureRisk: null,
+    weightHeight: null,
+    glucoseRisk: null,
+    heartRateRisk: null,
+  })
+
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+
+  // AI state
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState("")
+  const [aiResult, setAiResult] = useState("")
+
   const inputStyle = {
     border: "1px solid #DADDE5",
     borderRadius: 10,
@@ -37,17 +53,6 @@ export default function Dashboard() {
 
   const labelStyle = { display: "flex", flexDirection: "column", gap: 6 }
   const labelTextStyle = { fontSize: 12, color: "#5B6475" }
-
-  const [charts, setCharts] = useState({
-    bmi: null,
-    bloodPressureRisk: null,
-    weightHeight: null,
-    glucoseRisk: null,
-    heartRateRisk: null,
-  })
-
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
 
   const requestParams = useMemo(() => {
     return {
@@ -72,7 +77,6 @@ export default function Dashboard() {
   async function loadCharts() {
     setLoading(true)
     setError("")
-
     try {
       const [
         bmi,
@@ -87,14 +91,7 @@ export default function Dashboard() {
         getGlucoseRiskChart(requestParams.glucose),
         getHeartRateRiskChart(requestParams.heartRate),
       ])
-
-      setCharts({
-        bmi,
-        bloodPressureRisk,
-        weightHeight,
-        glucoseRisk,
-        heartRateRisk,
-      })
+      setCharts({ bmi, bloodPressureRisk, weightHeight, glucoseRisk, heartRateRisk })
     } catch (e) {
       setError(e?.message || "Failed to load charts")
     } finally {
@@ -102,8 +99,27 @@ export default function Dashboard() {
     }
   }
 
+  async function loadAiInsights() {
+    setAiLoading(true)
+    setAiError("")
+    setAiResult("")
+    try {
+      const res = await fetch("/api/groq/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestParams),
+      })
+      if (!res.ok) throw new Error(`Request failed (${res.status})`)
+      const data = await res.json()
+      setAiResult(data.recommendation)
+    } catch (e) {
+      setAiError(e.message || "Failed to get AI recommendations")
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
   useEffect(() => {
-    // Initial render uses empty inputs, so backend will fall back to defaults.
     loadCharts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -124,84 +140,41 @@ export default function Dashboard() {
 
       <Card style={{ marginBottom: 18 }}>
         <form onSubmit={onSubmit}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-            <div>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Basic Health Metrics</h2>
-              <p style={{ margin: "6px 0 0 0", color: "#5B6475", fontSize: 13 }}>
-                Leave any field blank to use default chart settings.
-              </p>
-            </div>
+          <div>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Basic Health Metrics</h2>
+            <p style={{ margin: "6px 0 0 0", color: "#5B6475", fontSize: 13 }}>
+              Leave any field blank to use default chart settings.
+            </p>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 12, marginTop: 14 }}>
             <label style={labelStyle}>
               <span style={labelTextStyle}>BMI</span>
-              <input
-                style={inputStyle}
-                value={bmiInput}
-                onChange={(e) => setBmiInput(e.target.value)}
-                placeholder="e.g. 24.5"
-              />
+              <input style={inputStyle} value={bmiInput} onChange={(e) => setBmiInput(e.target.value)} placeholder="e.g. 24.5" />
             </label>
-
             <label style={labelStyle}>
               <span style={labelTextStyle}>Weight (kg)</span>
-              <input
-                style={inputStyle}
-                value={weightInput}
-                onChange={(e) => setWeightInput(e.target.value)}
-                placeholder="e.g. 70"
-              />
+              <input style={inputStyle} value={weightInput} onChange={(e) => setWeightInput(e.target.value)} placeholder="e.g. 70" />
             </label>
-
             <label style={labelStyle}>
               <span style={labelTextStyle}>Height (cm)</span>
-              <input
-                style={inputStyle}
-                value={heightInput}
-                onChange={(e) => setHeightInput(e.target.value)}
-                placeholder="e.g. 170"
-              />
+              <input style={inputStyle} value={heightInput} onChange={(e) => setHeightInput(e.target.value)} placeholder="e.g. 170" />
             </label>
-
             <label style={labelStyle}>
               <span style={labelTextStyle}>Systolic (mmHg)</span>
-              <input
-                style={inputStyle}
-                value={systolicInput}
-                onChange={(e) => setSystolicInput(e.target.value)}
-                placeholder="e.g. 120"
-              />
+              <input style={inputStyle} value={systolicInput} onChange={(e) => setSystolicInput(e.target.value)} placeholder="e.g. 120" />
             </label>
-
             <label style={labelStyle}>
               <span style={labelTextStyle}>Diastolic (mmHg)</span>
-              <input
-                style={inputStyle}
-                value={diastolicInput}
-                onChange={(e) => setDiastolicInput(e.target.value)}
-                placeholder="e.g. 80"
-              />
+              <input style={inputStyle} value={diastolicInput} onChange={(e) => setDiastolicInput(e.target.value)} placeholder="e.g. 80" />
             </label>
-
             <label style={labelStyle}>
               <span style={labelTextStyle}>Glucose (mg/dL)</span>
-              <input
-                style={inputStyle}
-                value={glucoseInput}
-                onChange={(e) => setGlucoseInput(e.target.value)}
-                placeholder="e.g. 105"
-              />
+              <input style={inputStyle} value={glucoseInput} onChange={(e) => setGlucoseInput(e.target.value)} placeholder="e.g. 105" />
             </label>
-
             <label style={labelStyle}>
               <span style={labelTextStyle}>Heart Rate (bpm)</span>
-              <input
-                style={inputStyle}
-                value={heartRateInput}
-                onChange={(e) => setHeartRateInput(e.target.value)}
-                placeholder="e.g. 70"
-              />
+              <input style={inputStyle} value={heartRateInput} onChange={(e) => setHeartRateInput(e.target.value)} placeholder="e.g. 70" />
             </label>
           </div>
 
@@ -230,15 +203,12 @@ export default function Dashboard() {
         <Card>
           <VegaChart spec={charts.bmi} scale={0.95} />
         </Card>
-
         <Card>
           <VegaChart spec={charts.bloodPressureRisk} scale={0.95} />
         </Card>
-
         <Card>
           <VegaChart spec={charts.weightHeight} scale={0.95} />
         </Card>
-
         <Card>
           <VegaChart spec={charts.glucoseRisk} scale={0.95} />
         </Card>
@@ -252,39 +222,62 @@ export default function Dashboard() {
                 This is for general awareness, not a diagnosis.
               </p>
               <ul style={{ margin: "10px 0 0 18px", color: "#334155", fontSize: 13, lineHeight: 1.6 }}>
-                <li>
-                  <strong>Bradycardia</strong>: typically{" "}
-                  <strong>&lt; 60 bpm</strong> (lower than average resting rate)
-                </li>
-                <li>
-                  <strong>Normal</strong>: about <strong>60–100 bpm</strong>
-                </li>
-                <li>
-                  <strong>Tachycardia</strong>: typically{" "}
-                  <strong>&gt; 100 bpm</strong> (higher than average resting rate)
-                </li>
+                <li><strong>Bradycardia</strong>: typically <strong>&lt; 60 bpm</strong></li>
+                <li><strong>Normal</strong>: about <strong>60–100 bpm</strong></li>
+                <li><strong>Tachycardia</strong>: typically <strong>&gt; 100 bpm</strong></li>
               </ul>
             </div>
           </div>
-
           <div style={{ marginTop: 12 }}>
             <VegaChart spec={charts.heartRateRisk} scale={0.95} />
           </div>
         </Card>
 
-        <Card style={{ borderLeft: "6px solid #2563EB" }}>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>AI Insights</h2>
-          <p style={{ margin: "8px 0 0 0", color: "#5B6475", fontSize: 13 }}>
-            Groq-based recommendations will appear here once AI endpoints are enabled for this sprint.
+        {/* AI Insights Card */}
+        <Card>
+          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>🤖 AI Health Insights</h2>
+          <p style={{ margin: "6px 0 12px 0", color: "#5B6475", fontSize: 13 }}>
+            Personalized suggestions based on your metrics. Not a medical diagnosis — always consult a healthcare professional.
           </p>
-          <ul style={{ margin: "12px 0 0 18px", color: "#334155", fontSize: 13, lineHeight: 1.6 }}>
-            <li>Compare your metrics to the population distribution.</li>
-            <li>Flag potential areas to discuss with a clinician.</li>
-            <li>Generate short, non-diagnostic maintenance suggestions.</li>
-          </ul>
+
+          <button
+            type="button"
+            onClick={loadAiInsights}
+            disabled={aiLoading}
+            style={{
+              background: "#2563EB",
+              color: "white",
+              border: "none",
+              borderRadius: 12,
+              padding: "10px 18px",
+              fontWeight: 700,
+              cursor: aiLoading ? "not-allowed" : "pointer",
+              fontSize: 14,
+            }}
+          >
+            {aiLoading ? "Getting AI Insights..." : "Get AI Recommendations"}
+          </button>
+
+          {aiError && (
+            <p style={{ color: "crimson", fontSize: 13, marginTop: 10 }}>{aiError}</p>
+          )}
+
+          {aiResult && (
+            <div style={{
+              marginTop: 14,
+              background: "#F0F7FF",
+              borderRadius: 10,
+              padding: "12px 16px",
+              fontSize: 14,
+              color: "#1E3A5F",
+              lineHeight: 1.7,
+              whiteSpace: "pre-wrap",
+            }}>
+              {aiResult}
+            </div>
+          )}
         </Card>
       </div>
     </div>
   )
 }
-
