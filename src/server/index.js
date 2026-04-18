@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const router = require("./routes/router");
@@ -5,6 +6,7 @@ const populationCache = require("./services/populationCache");
 
 const app = express();
 
+app.use(express.json());
 app.use("/api", router);
 
 // Serve React frontend in production
@@ -16,8 +18,6 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(clientDist, "index.html"));
 });
 
-// Use 5001 by default so local dev doesn't collide with system-reserved port 5000.
-// (Port 5000 on macOS may be occupied by system processes, causing EADDRINUSE.)
 const PORT = process.env.PORT || 5001;
 
 async function startServer() {
