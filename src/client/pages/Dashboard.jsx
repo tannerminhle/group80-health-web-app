@@ -18,13 +18,23 @@ function toNullableNumber(input) {
 }
 
 export default function Dashboard() {
-  const [bmiInput, setBmiInput] = useState("")
+
   const [systolicInput, setSystolicInput] = useState("")
   const [diastolicInput, setDiastolicInput] = useState("")
   const [weightInput, setWeightInput] = useState("")
   const [heightInput, setHeightInput] = useState("")
   const [glucoseInput, setGlucoseInput] = useState("")
   const [heartRateInput, setHeartRateInput] = useState("")
+
+
+  const computedBMI = useMemo(() => {
+  const w = toNullableNumber(weightInput)
+  const h = toNullableNumber(heightInput)
+  if (!w || !h) return null
+  const heightM = h / 100  
+  return Math.round((w / (heightM * heightM)) * 10) / 10  
+}, [weightInput, heightInput])
+
 
   const [charts, setCharts] = useState({
     bmi: null,
@@ -56,7 +66,7 @@ export default function Dashboard() {
 
   const requestParams = useMemo(() => {
     return {
-      bmi: toNullableNumber(bmiInput),
+      bmi: computedBMI,
       systolic: toNullableNumber(systolicInput),
       diastolic: toNullableNumber(diastolicInput),
       weight: toNullableNumber(weightInput),
@@ -65,7 +75,7 @@ export default function Dashboard() {
       heartRate: toNullableNumber(heartRateInput),
     }
   }, [
-    bmiInput,
+    computedBMI,
     systolicInput,
     diastolicInput,
     weightInput,
@@ -149,9 +159,14 @@ export default function Dashboard() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 12, marginTop: 14 }}>
             <label style={labelStyle}>
-              <span style={labelTextStyle}>BMI</span>
-              <input style={inputStyle} value={bmiInput} onChange={(e) => setBmiInput(e.target.value)} placeholder="e.g. 24.5" />
-            </label>
+            <span style={labelTextStyle}>BMI (auto-calculated)</span>
+            <input
+              style={{ ...inputStyle, background: "#F3F4F6", color: "#6B7280" }}
+              value={computedBMI !== null ? computedBMI : "—"}
+              readOnly
+              placeholder="Enter weight & height"
+            />
+          </label>
             <label style={labelStyle}>
               <span style={labelTextStyle}>Weight (kg)</span>
               <input style={inputStyle} value={weightInput} onChange={(e) => setWeightInput(e.target.value)} placeholder="e.g. 70" />
